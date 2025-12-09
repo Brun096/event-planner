@@ -2,8 +2,10 @@
 
 import React from 'react';
 import Link from 'next/link';
+import { Session } from 'next-auth';
+import { logout } from '@/lib/auth-actions';
 
-export default function Navbar() {
+export default function Navbar({ session }: { session: Session | null }) {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   return (
     <nav className='bg-slate-800 border-b border-slate-700 shadow-lg'>
@@ -21,26 +23,39 @@ export default function Navbar() {
             >
               Events
             </Link>
-            <Link
-              href='/events/create'
-              className='text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors'
-            >
-              Create Event
-            </Link>
-            <Link
-              href='/dashboard'
-              className='text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors'
-            >
-              Dashboard
-            </Link>
-            <div className='flex items-center space-x-2'>
-              <Link
-                href='/login'
-                className='bg-primary text-background hover:bg-primary/90 px-3 py-2 rounded-md text-sm font-medium transition-colors'
-              >
-                Sign in with GitHub
-              </Link>
-            </div>
+            {session ? (
+              <>
+                <Link
+                  href='/events/create'
+                  className='text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors'
+                >
+                  Create Event
+                </Link>
+                <Link
+                  href='/dashboard'
+                  className='text-foreground hover:text-primary px-3 py-2 rounded-md text-sm font-medium transition-colors'
+                >
+                  Dashboard
+                </Link>
+                <div className='flex items-center space-x-2'>
+                  <button
+                    onClick={logout}
+                    className='bg-primary text-background hover:bg-primary/90 px-3 py-2 rounded-md text-sm font-medium transition-colors'
+                  >
+                    Sign out
+                  </button>
+                </div>
+              </>
+            ) : (
+              <div className='flex items-center space-x-2'>
+                <Link
+                  href='/login'
+                  className='bg-primary text-background hover:bg-primary/90 px-3 py-2 rounded-md text-sm font-medium transition-colors'
+                >
+                  Sign in with GitHub
+                </Link>
+              </div>
+            )}
           </div>
           <div className='md:hidden flex items-center'>
             <button
